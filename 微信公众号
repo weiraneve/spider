@@ -10,11 +10,12 @@ import re
 import os
 
 # 获取cookies和token
-class C_ookie:
+class C_ookie(object):
     # 初始化
-    def __init__(self):
+    def __init__(self,id,pw):
         self.html = ''
-
+        self.id = id
+        self.pw = pw
     # 获取cookie
     def get_cookie(self):
         cooki  = {}
@@ -27,11 +28,9 @@ class C_ookie:
         PW = Browner.find_element_by_name('password')
         # 输入账号
        #输入账号
-        id = '907221539@qq.com'
+        id = self.id
         #输入密码
-        pw = 'sun8100512'
-        # id = input('请输入账号:')
-        # pw = input('请输入密码:')
+        pw = self.pw
         ID.send_keys(id)
         PW.send_keys(pw)
         # 获取登录button，点击登录
@@ -84,8 +83,8 @@ class getEssay:
          }
         # 地址
         url = 'https://mp.weixin.qq.com/cgi-bin/searchbiz?'
-        # query = input('请输入要搜索的公众号关键字:，也可以输入公众号编号，准确寻找')---------------------------------------------------------------------------------------------------------------------------------------
-        query = 'ksgx007'
+        # query = input('请输入要搜索的公众号关键字:，也可以输入公众号编号，准确寻找')------------------------------------------------------------------------------------------------------------
+        query = '西华大学大学生心理服务联合会'
         # 请求参数
         data = {
             'action': 'search_biz',
@@ -173,8 +172,10 @@ class getEssay:
                 f.write(word)
         print('爬取完毕')
         
-        
-C = C_ookie()
+id = input('请输入微信公众号账号')
+pw = input('请输入微信公众号密码')
+
+C = C_ookie(id,pw)
 C.get_cookie()
 G = getEssay()
 G.getGname()
