@@ -87,7 +87,7 @@ headers = {
 }
 cookie, gtk, qzonetoken = Login_QQ()  # 通过登录函数取得cookies，gtk，qzonetoken
 s = requests.session()  # 用requests初始化会话
-friends = ['120613729']#需要爬取的qq账号
+friends = ['']#需要爬取的qq账号
 count = 0
 
 for qq in friends:  # 遍历qq号列表
@@ -111,8 +111,6 @@ for qq in friends:  # 遍历qq号列表
         response = s.request('GET',
                              'https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6?',
                              params=params, headers=headers, cookies=cookie)
-        with open('text.txt','a') as f:
-            f.write(response.text)
         if response.status_code == 200:
             text = response.text
             textlist = re.split('\{"certified"', text)[1:]
