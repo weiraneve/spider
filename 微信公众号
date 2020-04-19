@@ -8,6 +8,7 @@ from lxml import html
 import requests
 import re
 import os
+import getpass
 
 # 获取cookies和token
 class C_ookie(object):
@@ -18,7 +19,7 @@ class C_ookie(object):
         self.pw = pw
     # 获取cookie
     def get_cookie(self):
-        cooki  = {}
+        cooki = {}
         url = 'https://mp.weixin.qq.com'
         Browner = webdriver.Chrome()
         Browner.get(url)
@@ -173,7 +174,7 @@ class getEssay:
         print('爬取完毕')
         
 id = input('请输入微信公众号账号')
-pw = input('请输入微信公众号密码')
+pw = getpass.getpass('请输入微信公众号密码')
 
 C = C_ookie(id,pw)
 C.get_cookie()
