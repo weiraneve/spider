@@ -102,10 +102,11 @@ headers = {
 }
 cookie, gtk, qzonetoken = Login_QQ()  # 通过登录函数取得cookies，gtk，qzonetoken
 s = requests.session()  # 用requests初始化会话
-friends = ['']#需要爬取的qq账号
-count = 0
+friends = ['907221539']#需要爬取的qq账号
+
 
 for qq in friends:  # 遍历qq号列表
+    count = 0
     for p in range(0,50):
         pos = p * 20
         params = {
@@ -143,3 +144,4 @@ for qq in friends:  # 遍历qq号列表
 #Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数
 
 print('说说全部下载完成！')
+
