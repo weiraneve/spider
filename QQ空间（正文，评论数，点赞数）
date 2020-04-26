@@ -4,6 +4,7 @@ import datetime
 from selenium import webdriver
 import time
 from urllib import parse
+import csv
 
 # 获取cookie,g_tk,g_qzontoken这三个数据
 def Login_QQ():
@@ -141,7 +142,12 @@ for qq in friends:  # 遍历qq号列表
                     myMood['cmtnum'] = '评论数：'+ myMood['cmtnum']
                     lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num]
                     f.writelines('第%d条说说：%s \n\n'% (count,str(lists)))
+                    with open('{0}QQ空间.csv'.format(qq),'a') as f:#csv文件
+                        zone = csv.writer(f)
+                        zone.writerows([[myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num]])
 #Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数
 
 print('说说全部下载完成！')
+
+
 
