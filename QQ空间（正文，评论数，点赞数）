@@ -62,7 +62,6 @@ def parse_tid(tid,qq,gtk,headers):
     
 def parse_mood(json):
     '''从返回的json中，提取我们想要的字段'''
-    qq = get_qq()
     text = re.sub('"commentlist":.*?"conlist":', '', json)
     if text:
         myMood = {}
