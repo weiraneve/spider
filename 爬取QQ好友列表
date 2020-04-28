@@ -44,7 +44,6 @@ def get_friends_url(qq,gtk,qzonetoken):
     return url
 
 def get_friends_num(url,headers,cookie):
-    t=True
     offset= 300 #有多少好友,设为50倍数
     for i in range(0,offset,50):
         url_=url+'&offset='+str(offset)
