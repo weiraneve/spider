@@ -44,15 +44,16 @@ def get_friends_url(qq,gtk,qzonetoken):
     return url
 
 def get_friends_num(url,headers,cookie):
-    offset= 300 #有多少好友,设为50倍数
+    offset = 300 #有多少好友,设为50倍数
     for i in range(0,offset,50):
-        url = url+'&offset='+str(i)
-        page = requests.get(url=url, headers= headers,cookies = cookie).text
+        qq_url = url+'&offset='+str(i)
+        page = requests.get(url= qq_url, headers= headers,cookies = cookie).text
+        qq_url = url 
         qq_num = re.findall('"data":"(\w+)',page)
         with open('QQ_num.txt','a') as f:
             f.write(str(qq_num))
                 
-qq = ''#账号
+qq = '907221539'#账号
 cookie, gtk, qzonetoken = Login_QQ()
 url = get_friends_url(qq,gtk,qzonetoken)
 headers = {
