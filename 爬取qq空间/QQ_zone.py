@@ -131,7 +131,8 @@ for qq in qq_list:  # 遍历qq号列表
                 myMood = parse_mood(json)
                 tid = myMood['tid']
                 like_num = parse_tid(tid,qq,gtk,headers)
-                like_num = '点赞人数  ' + str(like_num)
+                like_num = '点赞人数 ：' + str(like_num)
+                myMood['cmtnum'] = "评论人数："+ str(myMood['cmtnum'])
                 file_name = '{0}QQ空间.txt'.format(qq)
                 a_path = os.path.join(path, file_name)#将两个路径融合，得到存储的目的
                 with open(str(a_path),'a') as f:
@@ -139,6 +140,6 @@ for qq in qq_list:  # 遍历qq号列表
                     lists =[]
                     lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num]
                     f.writelines('第%d条说说：%s \n\n'% (count,str(lists)))
-#Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数
+#Mood_cont:正文 ,date为日期, cmtunm评论人数,like_num为点赞人数
 
 print('说说全部下载完成！')
