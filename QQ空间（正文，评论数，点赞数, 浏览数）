@@ -57,7 +57,6 @@ def parse_tid(tid,qq,gtk,headers):
     like_content = requests.get(like_url, headers = headers, timeout=20).content.decode('utf-8')
     # like_content是所有的点赞信息，其中like字段为点赞数目，list是点赞的人列表，有的数据中list为空
     #retweet 是转发量 ， PRD 是浏览量
-    print(like_content)
     like_num = re.search('("like":)(\w+)',like_content)
     skim_num = re.search('("PRD":)(\w+)',like_content)
     like_num = like_num.group(2)
@@ -148,7 +147,7 @@ for qq in friends:  # 遍历qq号列表
                     f.writelines('第%d条说说：%s \n\n'% (count,str(lists)))
                     with open('{0}QQ空间.csv'.format(qq),'a') as f:#csv文件
                         zone = csv.writer(f)
-                        zone.writerows([[myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num],skim_num])
+                        zone.writerows([[myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num,skim_num]])
 #Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数,skim_num为浏览人数
 
 print('说说全部下载完成！')
