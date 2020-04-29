@@ -35,7 +35,7 @@ class get_list():
         g_qzonetoken = g_qzonetoken.group(1)
         gtk = getGTK(cookie) 
         browser.close()
-        qq = '907221539'#账号
+        qq = ''#账号
         self.get_friends_url (qq,cookie,gtk,g_qzonetoken)
         return self.qq_list
 
