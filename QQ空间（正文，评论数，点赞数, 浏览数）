@@ -59,10 +59,15 @@ def parse_tid(tid,qq,gtk,headers):
     #retweet 是转发量 ， PRD 是浏览量
     like_num = re.search('("like":)(\w+)',like_content)
     skim_num = re.search('("PRD":)(\w+)',like_content)
-    like_num = like_num.group(2)
-    skim_num = skim_num.group(2)
-    return like_num ,skim_num
-    
+    try:#有些转发的说说会没有内容，导致报错
+        like_num = like_num.group(2)
+    except AttributeError as e:
+        like_num = 0
+    try:
+        skim_num = skim_num.group(2)
+    except AttributeError as e:
+        skim_num = 0     
+    return like_num , skim_num
 def parse_mood(json):
     '''从返回的json中，提取我们想要的字段'''
     text = re.sub('"commentlist":.*?"conlist":', '', json)
@@ -107,10 +112,9 @@ cookie, gtk, qzonetoken = Login_QQ()  # 通过登录函数取得cookies，gtk，
 s = requests.session()  # 用requests初始化会话
 friends = ['']#需要爬取的qq账号
 
-
 for qq in friends:  # 遍历qq号列表
     count = 0
-    for p in range(0,50):
+    for p in range(0,70):
         pos = p * 20
         params = {
             'uin': qq,
@@ -144,7 +148,7 @@ for qq in friends:  # 遍历qq号列表
                 with open('{0}QQ空间.txt'.format(qq),'a') as f:
                     count += 1
                     lists =[]
-                    myMood['cmtnum'] = '评论数：'+ myMood['cmtnum']
+                    myMood['cmtnum'] = '评论人数：'+ myMood['cmtnum']
                     lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num,skim_num]
                     f.writelines('第%d条说说：%s \n\n'% (count,str(lists)))
                     with open('{0}QQ空间.csv'.format(qq),'a') as f:#csv文件
