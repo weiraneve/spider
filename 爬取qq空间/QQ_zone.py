@@ -123,7 +123,7 @@ for qq in qq_list:  # 遍历qq号列表
         response = s.request('GET',
                              'https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6?',
                            params=params, headers=headers, cookies=cookie)
-        path = '/Users/guohezu/Desktop/python/1/'
+        path = 
         if response.status_code == 200:
             text = response.text
             textlist = re.split('\{"certified"', text)[1:]
