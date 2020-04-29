@@ -135,6 +135,8 @@ for qq in friends:  # 遍历qq号列表
             textlist = re.split('\{"certified"', text)[1:]
             for json in textlist:
                 myMood = parse_mood(json)
+                #if myMood['date'] != '2020-04-29' :#遍历多久时间之前到
+                #    break
                 tid = myMood['tid']
                 like_num,skim_num = parse_tid(tid,qq,gtk,headers)
                 like_num = '点赞人数：' + str(like_num)
@@ -151,5 +153,3 @@ for qq in friends:  # 遍历qq号列表
 #Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数,skim_num为浏览人数
 
 print('说说全部下载完成！')
-
-
