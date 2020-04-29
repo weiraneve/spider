@@ -56,9 +56,13 @@ def parse_tid(tid,qq,gtk,headers):
     like_url = like_url + parse.urlencode(params)
     like_content = requests.get(like_url, headers = headers, timeout=20).content.decode('utf-8')
     # like_content是所有的点赞信息，其中like字段为点赞数目，list是点赞的人列表，有的数据中list为空
+    #retweet 是转发量 ， PRD 是浏览量
+    print(like_content)
     like_num = re.search('("like":)(\w+)',like_content)
+    skim_num = re.search('("PRD":)(\w+)',like_content)
     like_num = like_num.group(2)
-    return like_num
+    skim_num = skim_num.group(2)
+    return like_num ,skim_num
     
 def parse_mood(json):
     '''从返回的json中，提取我们想要的字段'''
@@ -102,7 +106,7 @@ headers = {
 }
 cookie, gtk, qzonetoken = Login_QQ()  # 通过登录函数取得cookies，gtk，qzonetoken
 s = requests.session()  # 用requests初始化会话
-friends = ['']#需要爬取的qq账号
+friends = ['904542120']#需要爬取的qq账号
 
 
 for qq in friends:  # 遍历qq号列表
@@ -133,20 +137,20 @@ for qq in friends:  # 遍历qq号列表
             for json in textlist:
                 myMood = parse_mood(json)
                 tid = myMood['tid']
-                like_num = parse_tid(tid,qq,gtk,headers)
-                like_num = '点赞人数  ' + str(like_num)
+                like_num,skim_num = parse_tid(tid,qq,gtk,headers)
+                like_num = '点赞人数：' + str(like_num)
+                skim_num = '浏览人数：' + str(skim_num)
                 with open('{0}QQ空间.txt'.format(qq),'a') as f:
                     count += 1
                     lists =[]
                     myMood['cmtnum'] = '评论数：'+ myMood['cmtnum']
-                    lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num]
+                    lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num,skim_num]
                     f.writelines('第%d条说说：%s \n\n'% (count,str(lists)))
                     with open('{0}QQ空间.csv'.format(qq),'a') as f:#csv文件
                         zone = csv.writer(f)
-                        zone.writerows([[myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num]])
-#Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数
+                        zone.writerows([[myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num],skim_num])
+#Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数,skim_num为浏览人数
 
 print('说说全部下载完成！')
-
 
 
