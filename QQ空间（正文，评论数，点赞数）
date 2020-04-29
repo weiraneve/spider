@@ -106,7 +106,7 @@ headers = {
 }
 cookie, gtk, qzonetoken = Login_QQ()  # 通过登录函数取得cookies，gtk，qzonetoken
 s = requests.session()  # 用requests初始化会话
-friends = ['904542120']#需要爬取的qq账号
+friends = ['']#需要爬取的qq账号
 
 
 for qq in friends:  # 遍历qq号列表
