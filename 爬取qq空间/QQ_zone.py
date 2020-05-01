@@ -54,8 +54,16 @@ def parse_tid(tid,qq,gtk,headers):
     like_content = requests.get(like_url, headers = headers, timeout=20).content.decode('utf-8')
     # like_content是所有的点赞信息，其中like字段为点赞数目，list是点赞的人列表，有的数据中list为空
     like_num = re.search('("like":)(\w+)',like_content)
-    like_num = like_num.group(2)
-    return like_num
+    skim_num = re.search('("PRD":)(\w+)',like_content)
+    try:#有些转发的说说会没有内容，导致报错
+        like_num = like_num.group(2)
+    except AttributeError as e:
+        like_num = 0
+    try:
+        skim_num = skim_num.group(2)
+    except AttributeError as e:
+        skim_num = 0     
+    return like_num , skim_num
     
 def parse_mood(json):
     '''从返回的json中，提取我们想要的字段'''
@@ -123,23 +131,22 @@ for qq in qq_list:  # 遍历qq号列表
         response = s.request('GET',
                              'https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6?',
                            params=params, headers=headers, cookies=cookie)
-        path = 
+        path = '/Users/guohezu/Desktop/python/1/'
         if response.status_code == 200:
             text = response.text
             textlist = re.split('\{"certified"', text)[1:]
             for json in textlist:
                 myMood = parse_mood(json)
                 tid = myMood['tid']
-                like_num = parse_tid(tid,qq,gtk,headers)
-                like_num = '点赞人数 ：' + str(like_num)
-                myMood['cmtnum'] = "评论人数："+ str(myMood['cmtnum'])
+                like_num,skim_num = parse_tid(tid,qq,gtk,headers)
+                like_num = '点赞人数  ' + str(like_num)
                 file_name = '{0}QQ空间.txt'.format(qq)
                 a_path = os.path.join(path, file_name)#将两个路径融合，得到存储的目的
                 with open(str(a_path),'a') as f:
                     count += 1
                     lists =[]
-                    lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num]
+                    lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num,skim_num]
                     f.writelines('第%d条说说：%s \n\n'% (count,str(lists)))
-#Mood_cont:正文 ,date为日期, cmtunm评论人数,like_num为点赞人数
+#Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数,skim_num为浏览人数
 
 print('说说全部下载完成！')
