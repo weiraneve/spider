@@ -131,7 +131,7 @@ for qq in qq_list:  # 遍历qq号列表
         response = s.request('GET',
                              'https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6?',
                            params=params, headers=headers, cookies=cookie)
-        path = '/Users/guohezu/Desktop/python/1/'
+        path = ''
         if response.status_code == 200:
             text = response.text
             textlist = re.split('\{"certified"', text)[1:]
@@ -140,6 +140,7 @@ for qq in qq_list:  # 遍历qq号列表
                 tid = myMood['tid']
                 like_num,skim_num = parse_tid(tid,qq,gtk,headers)
                 like_num = '点赞人数  ' + str(like_num)
+                skim_num = '浏览人数  ' + str(skim_num)
                 file_name = '{0}QQ空间.txt'.format(qq)
                 a_path = os.path.join(path, file_name)#将两个路径融合，得到存储的目的
                 with open(str(a_path),'a') as f:
