@@ -55,10 +55,19 @@ def parse_tid(tid,qq,gtk,headers):
     like_url = like_url + parse.urlencode(params)
     like_content = requests.get(like_url, headers = headers, timeout=20).content.decode('utf-8')
     # like_content是所有的点赞信息，其中like字段为点赞数目，list是点赞的人列表，有的数据中list为空
+    #retweet 是转发量 ， PRD 是浏览量
     like_num = re.search('("like":)(\w+)',like_content)
-    like_num = like_num.group(2)
-    return like_num
-    
+    skim_num = re.search('("PRD":)(\w+)',like_content)
+    try:#有些转发的说说会没有内容，导致报错
+        like_num = like_num.group(2)
+    except AttributeError as e:
+        like_num = 0
+    try:
+        skim_num = skim_num.group(2)
+    except AttributeError as e:
+        skim_num = 0     
+    return like_num , skim_num
+
 def parse_mood(json):
     '''从返回的json中，提取我们想要的字段'''
     text = re.sub('"commentlist":.*?"conlist":', '', json)
@@ -87,8 +96,8 @@ def parse_mood(json):
             myMood['cmtnum'] = cmtnum
             tid = re.findall('"tid":(.*?),', text)[0]
             myMood['tid'] = tid
-        
         return myMood
+    
 def get_friends_url(qq,gtk,qzonetoken):
     url='https://h5.qzone.qq.com/proxy/domain/base.qzone.qq.com/cgi-bin/right/get_entryuinlist.cgi?'
     params = {"uin": qq,
@@ -109,6 +118,7 @@ def get_friends_num(url,headers,cookie):
         qq_num = re.findall('"data":"(\w+)',page)
         qq_list = qq_list + qq_num
     return qq_list
+
 # 伪造浏览器头
 headers = {
     'Host': 'user.qzone.qq.com',
@@ -116,11 +126,11 @@ headers = {
     'Accept': '*/*',
     'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
     'Accept-Encoding': 'gzip, deflate, br',
-    'Connection': 'keep-alive'
-}
+    'Connection': 'keep-alive'}
+
 cookie, gtk, qzonetoken = Login_QQ()  # 通过登录函数取得cookies，gtk，qzonetoken
 s = requests.session()  # 用requests初始化会话
-qq = '907221539'#账号
+qq = ''# 输入自己的账号
 url = get_friends_url(qq,gtk,qzonetoken)
 friends = get_friends_num(url,headers,cookie)
 
@@ -152,14 +162,16 @@ for qq in friends:  # 遍历qq号列表
             for json in textlist:
                 myMood = parse_mood(json)
                 tid = myMood['tid']
-                like_num = parse_tid(tid,qq,gtk,headers)
+                like_num,skim_num= parse_tid(tid,qq,gtk,headers)
+                skim_num = '浏览人数  ' + str(skim_num)
                 like_num = '点赞人数  ' + str(like_num)
                 with open('{0}QQ空间.txt'.format(qq),'a') as f:
                     count += 1
                     lists =[]
                     myMood['cmtnum'] = '评论数：'+ myMood['cmtnum']
-                    lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num]
+                    lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num,skim_num]
                     f.writelines('第%d条说说：%s \n\n'% (count,str(lists)))
-#Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数
+    print('已爬取{0}'.format(qq))
+#Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数,skim_num为浏览人数
 
 print('说说全部下载完成！')
