@@ -114,7 +114,7 @@ friends = ['']#需要爬取的qq账号
 
 for qq in friends:  # 遍历qq号列表
     count = 0
-    for p in range(0,70):
+    for p in range(0,700):
         pos = p * 20
         params = {
             'uin': qq,
