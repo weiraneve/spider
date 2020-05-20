@@ -8,36 +8,21 @@ from lxml import html
 import requests
 import re
 import os
-import getpass
+
 
 # 获取cookies和token
 class C_ookie(object):
     # 初始化
-    def __init__(self,id,pw):
+    def __init__(self):
         self.html = ''
-        self.id = id
-        self.pw = pw
     # 获取cookie
     def get_cookie(self):
         cooki = {}
         url = 'https://mp.weixin.qq.com'
-        Browner = webdriver.Chrome()
+        Browner = webdriver.Chrome()#不输入账号密码，直接扫码
         Browner.get(url)
-        # 获取账号输入框
-        ID = Browner.find_element_by_name('account')
-        # 获取密码输入框
-        PW = Browner.find_element_by_name('password')
-        # 输入账号
-       #输入账号
-        id = self.id
-        #输入密码
-        pw = self.pw
-        ID.send_keys(id)
-        PW.send_keys(pw)
-        # 获取登录button，点击登录
-        Browner.find_element_by_class_name('btn_login').click()
         # 等待扫二维码
-        time.sleep(10)
+        time.sleep(12)
         cks = Browner.get_cookies()
         for ck in cks:
             cooki[ck['name']] = ck['value']
@@ -124,7 +109,7 @@ class getEssay:
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36',
         'X-Requested-With': 'XMLHttpRequest'
          }
-        for begin in range(0,11,5): 
+        for begin in range(20,181,5): 
         #begin,为爬取多少页------------------------------------------------------------------------------------------------------------------------------------------------------
         # 遍历fakeid，访问获取文章链接
             for i in self.fakeid:
@@ -164,19 +149,17 @@ class getEssay:
         response = requests.get(url).text
         soup = BeautifulSoup(response,'lxml')
         words = soup.findAll('span')
-        path = '/Users/guohezu/Desktop/python/微信文章'
-        file_name = str(name)+'.txt'
+        path = ''#存储地址
+        file_name = str(name.replace('/',''))+'.txt'#文件格式里不能有‘/’，对应mac
         a_path = os.path.join(path,file_name)
         for word in words:
-            with open(a_path,'a') as f:
+            with open(a_path,'a') as f:#追加a
                 word = word.get_text()
                 f.write(word)
         print('爬取完毕')
         
-id = input('请输入微信公众号账号')
-pw = getpass.getpass('请输入微信公众号密码')
 
-C = C_ookie(id,pw)
+C = C_ookie()
 C.get_cookie()
 G = getEssay()
 G.getGname()
