@@ -1,14 +1,9 @@
-import time
-import json
-import random
-import csv
+import time , json ,random
+import csv , requests,re
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from lxml import html
-import requests
-import re
-import os
-
+import os , pdfkit
 
 # 获取cookies和token
 class C_ookie(object):
@@ -140,11 +135,12 @@ class getEssay:
             name = i['title']
             self.saveData(name,link)
 
-    # 保存数据进csv中
+    # 保存数据
     def saveData(self,name,link):
         with open('link.csv' ,'a',encoding='utf8') as f:
-            w = csv.writer(f)
+            w = csv.writer(f)#保存为csv
             w.writerow((name,link))
+            pdfkit.from_url(link,'{0}.pdf'.format(name)) #内容保存为pdf
         url = link
         response = requests.get(url).text
         soup = BeautifulSoup(response,'lxml')
@@ -155,7 +151,7 @@ class getEssay:
         for word in words:
             with open(a_path,'a') as f:#追加a
                 word = word.get_text()
-                f.write(word)
+                f.write(word)#保存正文
         print('爬取完毕')
         
 
