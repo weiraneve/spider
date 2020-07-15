@@ -140,7 +140,7 @@ class getEssay:
         with open('link.csv' ,'a',encoding='utf8') as f:
             w = csv.writer(f)#保存为csv
             w.writerow((name,link))
-            pdfkit.from_url(link,'{0}.pdf'.format(name)) #内容保存为pdf
+            #pdfkit.from_url(link,'{0}.pdf'.format(name)) #内容保存为pdf
         url = link
         response = requests.get(url).text
         soup = BeautifulSoup(response,'lxml')
