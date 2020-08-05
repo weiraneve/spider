@@ -1,3 +1,10 @@
+# 获取某个知乎用户详细信息的API接口
+user_url = 'https://www.zhihu.com/api/v4/members/{user}?include={include}'
+# 获取某个知乎用户关注了用户信息的API接口
+followees_url = 'https://www.zhihu.com/api/v4/members/{user}/followees?include={include}&offset={offset}&limit={limit}'
+# 获取某个知乎用户关注者用户信息的API接口
+followers_url = 'https://www.zhihu.com/api/v4/members/{user}/followers?include={include}&offset={offset}&limit={limit}'
+
 import re
 import os
 import time
