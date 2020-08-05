@@ -48,6 +48,6 @@ class zhihuJokesSpider():
             self.pointer += 1
 
 if __name__ == '__main__':
-    question_id = '341002197'
+    question_id = '341002197'#网页后缀id
     client = zhihuJokesSpider(question_id)
     client.start()
