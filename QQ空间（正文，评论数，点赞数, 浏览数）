@@ -29,12 +29,9 @@ def Login_QQ():
     for element in browser.get_cookies():
         cookie[element['name']] = element['value']
     html = browser.page_source  
-    pattern = re.compile(r'window\.g_qzonetoken = \(function\(\)\{ try\{return "(.*?)";\}')
-    g_qzonetoken = re.search(pattern, html)
-    g_qzonetoken = g_qzonetoken.group(1)
     gtk = getGTK(cookie) 
     browser.close()
-    return (cookie, gtk, g_qzonetoken)
+    return (cookie, gtk)
 
 def get_qq():
     for qq in friends:
@@ -50,8 +47,7 @@ def parse_tid(tid,qq,gtk,headers):
         "unikey": unikey,
         'face': 0,
         'fupdate': 1,
-        'g_tk': gtk,
-        'qzonetoken': ''
+        'g_tk': gtk
     }
     like_url = like_url + parse.urlencode(params)
     like_content = requests.get(like_url, headers = headers, timeout=20).content.decode('utf-8')
@@ -68,6 +64,7 @@ def parse_tid(tid,qq,gtk,headers):
     except AttributeError as e:
         skim_num = 0     
     return like_num , skim_num
+
 def parse_mood(json):
     '''从返回的json中，提取我们想要的字段'''
     text = re.sub('"commentlist":.*?"conlist":', '', json)
@@ -108,7 +105,7 @@ headers = {
     'Accept-Encoding': 'gzip, deflate, br',
     'Connection': 'keep-alive'
 }
-cookie, gtk, qzonetoken = Login_QQ()  # 通过登录函数取得cookies，gtk，qzonetoken
+cookie, gtk = Login_QQ()  # 通过登录函数取得cookies，gtk
 s = requests.session()  # 用requests初始化会话
 friends = ['']#需要爬取的qq账号
 
@@ -127,8 +124,7 @@ for qq in friends:  # 遍历qq号列表
             'callback': '_preloadCallback',
             'code_version': '1',
             'format': 'jsonp',
-            'need_private_comment': '1',
-            'qzonetoken': qzonetoken,
+            'need_private_comment': '1'
         }
 
         response = s.request('GET',
@@ -151,9 +147,9 @@ for qq in friends:  # 遍历qq号列表
                     myMood['cmtnum'] = '评论人数：'+ myMood['cmtnum']
                     lists = [myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num,skim_num]
                     f.writelines('第%d条说说：%s \n\n'% (count,str(lists)))
-                    with open('{0}QQ空间.csv'.format(qq),'a') as f:#csv文件
-                        zone = csv.writer(f)
-                        zone.writerows([[myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num,skim_num]])
+                    #with open('{0}QQ空间.csv'.format(qq),'a') as f:#csv文件
+                     #   zone = csv.writer(f)
+                      #  zone.writerows([[myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num,skim_num]])
 #Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数,skim_num为浏览人数
 
 print('说说全部下载完成！')
