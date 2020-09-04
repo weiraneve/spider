@@ -1,0 +1,18 @@
+import requests,json,re
+from bs4 import BeautifulSoup
+from selenium import webdriver
+
+for i in range(1,12):
+    url = "https://www.zhihu.com/people/yi-qi-liu-xue-wang-mandy/answers?page={0}".format(i)
+    browser = webdriver.Chrome()
+    browser.get(url)
+    html = browser.page_source
+    soup = BeautifulSoup(html, 'lxml')
+    namelist = soup.findAll('a',{'target' :'_blank'}) 
+    pattern = 'question(.[^<]+)'#href= 到 <为止的数据    
+    contents = re.findall(pattern,str(namelist))
+    for content in contents:
+        with open("4.txt","a") as f:
+             f.write("www.zhihu.com/question"+str(content) + "\n\n")
+    browser.close()
+    
