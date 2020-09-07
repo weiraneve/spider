@@ -1,0 +1,56 @@
+#爬取目标的关注者的粉丝数量，目标的uid参数可以加在https://m.weibo.cn/profile/ 之后，获得接口去寻找关注or粉丝信息，这里功能只有爬关注者的
+from urllib.parse import urlencode  
+import requests  
+from pyquery import PyQuery as pq
+#https://m.weibo.cn/api/container/getIndex?containerid=231051_-_followers_-_5692692520&page=1
+#使用上述微博页面才好爬
+base_url = 'https://m.weibo.cn/api/container/getIndex?'  
+headers = {  
+    'Host': 'm.weibo.cn',   
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',  
+    'X-Requested-With': 'XMLHttpRequest'
+}  
+def get_page(page):  
+    params = {  
+        'type': 'uid',  
+        'containerid': '231051_-_followers_-_5644764907', #变换用户的关键
+        'page': page  
+    }  
+    url = base_url + urlencode(params) 
+    try:  
+        response = requests.get(url, headers=headers)  
+        if response.status_code == 200:  
+            return response.json()
+    except requests.ConnectionError as e:  
+        print('Error', e.args)          
+def parse_page(json):  
+    if json:  
+        items = json.get('data').get('cards') #拆分字典
+        try :     #try语句，解决list溢出
+            card_group = items[-1].get('card_group')#最后一组开始
+        except IndexError:
+            card_group = items[1].get('card_group')#字典中1位的数组内容
+        except IndexError:
+            card_group = items[0].get('card_group')#字典中0位的数组内容 ,这里缘于其构造问题，得先看item[1],再看itme[0],视具体情况而定，也可以-1
+        weibo = {}
+        i = 0
+        while card_group[i].get('desc2'):
+            name = card_group[i].get('user').get('screen_name')
+            weibo[str(name)] = card_group[i].get('desc2')#粉丝数量
+            i +=1
+            try :#try语句，解决list溢出
+                card_group[i].get('desc2')
+            except IndexError:
+                break
+        yield weibo
+
+if __name__ == '__main__':  
+    try :
+        for page in range(1, 20):  
+            json = get_page(page)  
+            results = parse_page(json)  
+            for result in results:  
+                print(result)
+    except IndexError:
+        pass
+    
