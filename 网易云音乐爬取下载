@@ -11,7 +11,7 @@ class Encrypyed():
         self.nonce = '0CoJUm6Qyw8W8jud'
         self.pub_key = '010001'
 
-    # 登录加密算法, 基于https://github.com/stkevintan/nw_musicbox脚本实现
+    # 登录加密算法
     def encrypted_request(self, text):
         text = json.dumps(text)
         sec_key = self.create_secret_key(16)
