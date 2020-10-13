@@ -16,7 +16,7 @@ def get_data_usecookies(url):#需要使用cookies的模块
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
     }
-    raw_cookies ="KLBRSID=031b5396d5ab406499e2ac6fe1bb1a43|1602549740|1602545737; Hm_lpvt_98beee57fd2ef70ccdd5ca52b9740c49=1602549638; Hm_lvt_98beee57fd2ef70ccdd5ca52b9740c49=1602492155,1602492178,1602508474,1602508487; tshl=; tst=h; JOID=UFwRB0jVMg0V6chME9MVkBbkG9oEvUJkdLi9JUqse2pluYEod4vFjkzuzkwUMD-OsmWCI1h5tT2xKFPvmkoioKc=; SESSIONID=npifPsiYxOgpWHbdS59q8GmyXVn6rbRBvS2LdFaz9Rv; osd=WlwUB0vfMggV6sJMFtMWmhbhG9kOvUdkd7K9IEqvcWpguYIid47FjUbuy0wXOj-LsmaII115tjexLVPskEonoKQ=; _xsrf=1a3a2098-6dd9-44d0-a048-7c045e776cb1; _ga=GA1.2.878667294.1590407228; q_c1=a3d2073b463b4790b8cddf641e54889c|1600954805000|1590407232000; z_c0=Mi4xcHhISUJ3QUFBQUFBa0Zad3hmMVNFUmNBQUFCaEFsVk5RUDY0WHdELUVSRkxJS2dmR09SaHlUb3VJWV9yNU42a0hR|1590407232|1bc63cb298be8f935747cb1b1b808d5e6ef6b7bd; d_c0=\"AJBWcMX9UhGPTm13x-YrfO2NhguQvetCVWQ=|1590407227\"; _zap=3b4f7957-2b6b-40cb-a8b3-f0e00589c5e5"
+    raw_cookies =""#网页里寻找
     cookies = split_cookies(raw_cookies)
     r = requests.get(url, headers=headers, cookies = cookies)
     r.raise_for_status()
