@@ -1,0 +1,73 @@
+import requests,re
+
+def split_cookies(raw_cookie):# 拆分cookies
+    raw_cookies = '{raw_cookie}'.format(raw_cookie=raw_cookie)# Chrome上直接复制下的cookie值
+    keys = []    # 申明键和值的列表
+    values = []
+    cookie_list = raw_cookies.split(";")    # 先根据;拆分各个cookie，得到cookie_list列表
+    for item in cookie_list:    # 再根据 = 拆分键和值
+        keys.append(item.split('=', 1)[0])
+        values.append(item.split('=', 1)[1])
+    cookies = dict(zip(keys, values))
+    return cookies
+
+def get_data_usecookies(url):#需要使用cookies的模块
+    headers = {
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
+    }
+    raw_cookies ="KLBRSID=031b5396d5ab406499e2ac6fe1bb1a43|1602549740|1602545737; Hm_lpvt_98beee57fd2ef70ccdd5ca52b9740c49=1602549638; Hm_lvt_98beee57fd2ef70ccdd5ca52b9740c49=1602492155,1602492178,1602508474,1602508487; tshl=; tst=h; JOID=UFwRB0jVMg0V6chME9MVkBbkG9oEvUJkdLi9JUqse2pluYEod4vFjkzuzkwUMD-OsmWCI1h5tT2xKFPvmkoioKc=; SESSIONID=npifPsiYxOgpWHbdS59q8GmyXVn6rbRBvS2LdFaz9Rv; osd=WlwUB0vfMggV6sJMFtMWmhbhG9kOvUdkd7K9IEqvcWpguYIid47FjUbuy0wXOj-LsmaII115tjexLVPskEonoKQ=; _xsrf=1a3a2098-6dd9-44d0-a048-7c045e776cb1; _ga=GA1.2.878667294.1590407228; q_c1=a3d2073b463b4790b8cddf641e54889c|1600954805000|1590407232000; z_c0=Mi4xcHhISUJ3QUFBQUFBa0Zad3hmMVNFUmNBQUFCaEFsVk5RUDY0WHdELUVSRkxJS2dmR09SaHlUb3VJWV9yNU42a0hR|1590407232|1bc63cb298be8f935747cb1b1b808d5e6ef6b7bd; d_c0=\"AJBWcMX9UhGPTm13x-YrfO2NhguQvetCVWQ=|1590407227\"; _zap=3b4f7957-2b6b-40cb-a8b3-f0e00589c5e5"
+    cookies = split_cookies(raw_cookies)
+    r = requests.get(url, headers=headers, cookies = cookies)
+    r.raise_for_status()
+    return r.text
+
+def get_data(url):
+    headers = {
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
+    }
+    r = requests.get(url, headers=headers)
+    r.raise_for_status()
+    return r.text
+
+def parse_data_usecookies(url):#需要使用cookies的模块
+    html = get_data_usecookies(url)
+    pattern = '<span>他<!-- -->赞同我'  
+    flag = re.search(pattern,str(html))
+    if flag:
+        return True
+    else:
+        return False   
+
+def parse_data(url):
+    html = get_data(url)
+    pattern = '<span>他<!-- -->赞同我'  
+    flag = re.search(pattern,str(html))
+    if flag:
+        return True
+    else:
+        return False   
+
+def main():
+    count = 0
+    all_count = 0
+    for i in range(1,194):
+        url = "https://www.zhihu.com/people/feng-ye-xiao-wo/followers?page={0}".format(i)
+        html = get_data(url)
+        pattern = '"urlToken":"(.[^"]+)'  
+        names = re.findall(pattern,str(html))
+        names.pop(0)
+        names.pop()
+        for name in names:
+            all_count += 1
+            url = "https://www.zhihu.com/people/{0}".format(name)
+            if parse_data_usecookies(url) :
+                count += 1
+    print("总共有{0}".format(all_count))
+    print("有高质量关注者{0}".format(count))
+        
+if __name__ == "__main__":
+    main()
+    print("完成！！！")
+    
