@@ -65,8 +65,9 @@ def parse_person(uid):
         print('Error', e.args)
         
     person = {}
-    items = content.get('data').get('cards') #拆分字典，是为数组
+
     try:
+        items = content.get('data').get('cards') #拆分字典，是为数组
         card_group = items[0].get('card_group') #分类
         person["introduction"] = card_group[2].get('item_content')  #简介
     #    person['name'] = card_group[1].get('item_content')   #昵称
@@ -77,6 +78,7 @@ def parse_person(uid):
         return person
     
     try:
+        items = content.get('data').get('cards') #拆分字典，是为数组
         card_group = items[1].get('card_group') #分类
     except:
         person['gender'] = '无'
@@ -95,7 +97,7 @@ def parse_person(uid):
     return person 
 
 def main():
-    uid = 2377356574 #uid网页构造变换的关键
+    uid = 1660963912 #uid网页构造变换的关键
     json = get_fans(1,uid)
     count = count_all(json)
     print("总共有{0}位关注者".format(count))
@@ -105,12 +107,11 @@ def main():
         weibos = parse_fans(json)  
         for weibo in weibos:  
             person = parse_person(weibo['fans_id'])
-            with open('微博关注者粉丝量.csv','a') as f: #csv文件
+            with open('微博关注者信息.csv','a') as f: #csv文件
                 zone = csv.writer(f)
                 zone.writerows([[weibo['name'],weibo['fans_count'],person['gender'],person['zone'],person['introduction']]])
                 #微博名字，粉丝数量，性别，所在地,微博个人简介   
-                
-    print("爬取成功！")
+    print("爬取成功！")#因为大多数博主关注者数量灌水，实际爬取会少很多数量
     
 if __name__ == '__main__': 
     main()
