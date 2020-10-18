@@ -4,7 +4,7 @@ import requests, csv
 # https://m.weibo.cn/p/index?containerid=231051_-_followers_-_5692692520 关注者信息 id中uid需要寻找，其他参数均为固定。
 # https://m.weibo.cn/p/index?containerid=231051_-_fans_-_5692692520 粉丝信息
     
-def get_page(page):  
+def get_fans(page):  
     uid = 2377356574 #网页构造变换的关键
     base_url = 'https://m.weibo.cn/api/container/getIndex?'  
     headers = {  
@@ -30,26 +30,28 @@ def count_all(json):
         
     return total
 
-def parse_page(json):  
-    if json:  
-        items = json.get('data').get('cards') #拆分字典
-        try :     #try语句，解决list溢出
-            card_group = items[-1].get('card_group')#最后一组开始
+def parse_fans(json):  
+    items = json.get('data').get('cards') #拆分字典
+    try :     #try语句，解决list溢出
+        card_group = items[-1].get('card_group')#最后一组开始
+    except IndexError:
+        try:
+            card_group = items[1].get('card_group')#字典中1位的数组内容
         except IndexError:
             try:
-                card_group = items[1].get('card_group')#字典中1位的数组内容
+                card_group = items[0].get('card_group')#字典中0位的数组内容 ,这里缘于其构造问题，得先看item[1],再看itme[0],视具体情况而定，也可以-1
             except IndexError:
-                try:
-                    card_group = items[0].get('card_group')#字典中0位的数组内容 ,这里缘于其构造问题，得先看item[1],再看itme[0],视具体情况而定，也可以-1
-                except IndexError:
-                    pass
-        weibo = {}
+                pass
+    weibo = {}
+    try:
         name = card_group[0].get('user').get('screen_name')
         weibo['name'] = name
         weibo['fans_count'] = card_group[0].get('desc2')#粉丝数量
         weibo['fans_id'] = card_group[0].get('user').get('id')                
         yield weibo
-            
+    except :
+        print('no')
+
 def parse_person(uid):  
     url = 'https://m.weibo.cn/api/container/getIndex?containerid=230283{0}_-_INFO&title=基本资料&luicode=10000011&lfid=230283{0}'.format(uid)
     response = requests.get(url)
@@ -85,15 +87,14 @@ def parse_person(uid):
     return person
     
 def main():
-    json = get_page(1)
+    json = get_fans(1)
     count = count_all(json)
     print("总共有{0}位关注者".format(count))
     num = int(count/20 + 1) #每一页粉丝爬取20个
-    
     for page in range(1, num):  
-        json = get_page(page)  
-        results = parse_page(json)  
-        for weibo in results:  
+        json = get_fans(page)  
+        weibos = parse_fans(json)  
+        for weibo in weibos:  
             person = parse_person(weibo['fans_id'])
             with open('微博关注者粉丝量.csv','a') as f: #csv文件
                 zone = csv.writer(f)
