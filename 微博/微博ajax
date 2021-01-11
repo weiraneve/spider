@@ -4,18 +4,12 @@ import requests
 from pyquery import PyQuery as pq
 #https://m.weibo.cn/u/2377356574?uid=2377356574&t=0&luicode=10000011&lfid=100103type%3D1%26q%3D浴中奇思
 #使用上述微博页面才好爬
-base_url = 'https://m.weibo.cn/api/container/getIndex?'  
-headers = {  
-    'Host': 'm.weibo.cn',  
-    'Referer': 'https://m.weibo.cn/u/2377356574',  
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',  
-    'X-Requested-With': 'XMLHttpRequest'
-}  
+base_url = 'https://m.weibo.cn/api/container/getIndex?'
 def get_page(page):  
     params = {  
         'type': 'uid',  
-        'value': '2377356574',  #value 与containerid是变化的关键
-        'containerid': '1076032377356574',  
+        'value': '2103197132',  #value 与containerid是变化的关键,在那个xhr里面找
+        'containerid': '1076032103197132',  #containerid要xhr里面不变动的数值
         'page': page  
     }  
     url = base_url + urlencode(params) 
@@ -34,15 +28,18 @@ def parse_page(json):
             item = item.get('mblog')  
             if item:
                 weibo = {}   
-                weibo['text'] = pq(item.get('text')).text()#爬取正文  
-                weibo['attitudes'] = item.get('attitudes_count')#爬取点赞数  
-                weibo['comments'] = item.get('comments_count')  #爬取评论
-                weibo['reposts'] = item.get('reposts_count')  #爬取转发数
+                weibo['正文'] = pq(item.get('text')).text()#爬取正文 ，pq库为了去掉正文的标签
+                weibo['点赞数  '] = item.get('attitudes_count')#爬取点赞数  
+                weibo['评论'] = item.get('comments_count')  #爬取评论
+                weibo['转发数'] = item.get('reposts_count')  #爬取转发数
+                weibo['创建时间'] = item.get('created_at')  #爬取创建时间
                 yield weibo
             
 if __name__ == '__main__':  
-    for page in range(1, 11):  
+    for page in range(1,11):  
         json = get_page(page)  
         results = parse_page(json)  
         for result in results:  
-            print(result)
+#             print(reuslt)
+            with open("100.txt",'a') as f:
+                f.write(str(result))
