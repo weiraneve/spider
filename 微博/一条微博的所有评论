@@ -1,4 +1,4 @@
-import requests,re,csv,time
+import requests,re,csv,time,json
 
 with open('ck.txt','r') as f :    #这里的微博运用selenium接管，写入cookies
     cookies = f.read()  #读取cookies    
