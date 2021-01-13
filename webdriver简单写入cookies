@@ -1,0 +1,15 @@
+from selenium import webdriver
+
+#写入cookies
+browser.get(url)
+cks = browser.get_cookies()
+for ck in cks:
+    cookies[ck['name']] = ck['value']
+ck1 = json.dumps(cookies)
+with open('ck.txt','w') as f :
+    f.write(ck1)
+#读取cookies    
+with open('ck.txt','r') as f :
+    cookies = f.read()
+    f.close()
+    cookies = json.loads(cookies)
