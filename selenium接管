@@ -1,0 +1,24 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver import ActionChains
+options = webdriver.ChromeOptions() 
+options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
+# options.add_experimental_option('excludeSwitches', ['enable-automation']) #注释后可以不报错
+chromedriver_path = "/Users/shanshan/opt/anaconda3/bin/chromedriver" #驱动路径
+browser = webdriver.Chrome(executable_path=chromedriver_path, options=options)
+#直接selenium接管浏览器Chrome
+#先在终端打开： Google\ Chrome --remote-debugging-port=9222 --user-data-dir="~/ChromeProfile"
+
+url='https://www.zhihu.com/people/feng-ye-xiao-wo/followers?page=1'
+browser.get(url)
+#写入cookies
+cks = browser.get_cookies()
+for ck in cks:
+    cookies[ck['name']] = ck['value']
+ck1 = json.dumps(cookies)
+with open('ck.txt','w') as f :
+    f.write(ck1)
+
+print(browser.page_source) #源代码
