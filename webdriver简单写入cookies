@@ -12,5 +12,4 @@ with open('ck.txt','w') as f :
 #读取cookies    
 with open('ck.txt','r') as f :
     cookies = f.read()
-    f.close()
     cookies = json.loads(cookies)
