@@ -1,6 +1,7 @@
 from selenium import webdriver
 
 #写入cookies
+cookies = {}
 browser.get(url)
 cks = browser.get_cookies()
 for ck in cks:
