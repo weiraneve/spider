@@ -14,6 +14,7 @@ browser = webdriver.Chrome(executable_path=chromedriver_path, options=options)
 url=''
 browser.get(url)
 #写入cookies
+cookies = {}
 cks = browser.get_cookies()
 for ck in cks:
     cookies[ck['name']] = ck['value']
