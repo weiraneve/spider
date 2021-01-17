@@ -11,7 +11,7 @@ browser = webdriver.Chrome(executable_path=chromedriver_path, options=options)
 #直接selenium接管浏览器Chrome
 #先在终端打开： Google\ Chrome --remote-debugging-port=9222 --user-data-dir="~/ChromeProfile"
 
-url='https://www.zhihu.com/people/feng-ye-xiao-wo/followers?page=1'
+url=''
 browser.get(url)
 #写入cookies
 cks = browser.get_cookies()
