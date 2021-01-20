@@ -7,8 +7,7 @@ def get_cars_in_Page(url):
     proxies = { 
         'http' : 'http://201.69.7.108:9000',
     }  #更换IP池
-    ug = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)  Safari/537.36'
-    headers = {'User-Agent': ug,'Accept-Language':'zh-CN','Cache-Control':'no-cache'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)  Safari/537.36','Accept-Language':'zh-CN','Cache-Control':'no-cache'}
     r = requests.get(url, headers = headers,timeout = 1,proxies = proxies)#老实讲好像这里很容易被封IP，爬了一会被封了
     soup = bs(r.text,'lxml')
     cars = soup.select('div.container.search-list-wrapper a')
