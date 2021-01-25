@@ -53,7 +53,6 @@ def get_fans(name,url_name,path):
         for followers_name,url_name in  zip(followers_name_data,url_name_data):
             zone = csv.writer(f)
             zone.writerows([[followers_name,url_name]])
-    
-get_fans(name = 'doublelift',url_name='doublelift1',path='/Users/shanshan/Desktop/python')
+   
 
 
