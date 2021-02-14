@@ -17,7 +17,7 @@ def get_fans(file_url_name,path):
     
     with open( path + '/{0}的粉丝.csv'.format(file_url_name),'a') as f: 
         zone = csv.writer(f)
-        head = ['粉丝关注者网页id']
+        head = ['fans_id']
         zone.writerows([head])
         
     old_scroll_height = -1
