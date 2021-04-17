@@ -50,7 +50,7 @@ def parse_tid(tid,qq,gtk,headers):
         'g_tk': gtk
     }
     like_url = like_url + parse.urlencode(params)
-    like_content = requests.get(like_url, headers = headers, timeout=20).content.decode('utf-8')
+    like_content = requests.get(like_url, headers = headers,timeout=20).content.decode('utf-8')
     # like_content是所有的点赞信息，其中like字段为点赞数目，list是点赞的人列表，有的数据中list为空
     #retweet 是转发量 ， PRD 是浏览量
     like_num = re.search('("like":)(\w+)',like_content)
@@ -107,12 +107,13 @@ headers = {
 }
 cookie, gtk = Login_QQ()  # 通过登录函数取得cookies，gtk
 s = requests.session()  # 用requests初始化会话
-friends = ['']#需要爬取的qq账号
+s.keep_alive = False # 关闭多余连接
+friends = ['907221539']#需要爬取的qq账号
 
 for qq in friends:  # 遍历qq号列表
     count = 0
     for p in range(0,700):
-        pos = p * 20
+        pos = p * 20        
         params = {
             'uin': qq,
             'ftype': '0',
@@ -126,10 +127,11 @@ for qq in friends:  # 遍历qq号列表
             'format': 'jsonp',
             'need_private_comment': '1'
         }
-
+        
         response = s.request('GET',
                              'https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6?',
-                             params=params, headers=headers, cookies=cookie)
+                             params=params,cookies=cookie,verify=False)
+        # 这里verify = False是为了关闭 SSL 验证
         if response.status_code == 200:
             text = response.text
             textlist = re.split('\{"certified"', text)[1:]
@@ -151,5 +153,6 @@ for qq in friends:  # 遍历qq号列表
                      #   zone = csv.writer(f)
                       #  zone.writerows([[myMood['Mood_cont'],myMood['date'],myMood['time'],myMood['cmtnum'],like_num,skim_num]])
 #Mood_cont:正文 ,date为日期, comment_num为评论人数,like_num为点赞人数,skim_num为浏览人数
+            response.close() # 关闭，很重要,确保不要过多的http链接
 
 print('说说全部下载完成！')
